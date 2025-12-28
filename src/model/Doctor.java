@@ -7,11 +7,12 @@ public class Doctor extends Person{
     private HashSet<DayOfWeek> availability = new HashSet<>();
     private String speciality;
 
-    public Doctor(String firstName, String lastName, String id, String email, String speciality, HashSet<DayOfWeek> availability) {
-        super(firstName, lastName, id, email);
+    public Doctor(String firstName, String lastName, String id, String phoneNumber, String speciality, HashSet<DayOfWeek> availability) {
+        super(firstName, lastName, id, phoneNumber);
         this.speciality = speciality;
         this.availability = availability;
     }
+    public Doctor(){}
 
     public HashSet<DayOfWeek> getAvailability() {
         return availability;
@@ -34,6 +35,6 @@ public class Doctor extends Person{
         System.out.println("-First name: " + firstName);
         System.out.println("-Last name: " + lastName);
         System.out.println("-ID: " + id);
-        System.out.println("-Email: " + email);
+        System.out.println("-Phone number: " + phoneNumber);
     }
 }
