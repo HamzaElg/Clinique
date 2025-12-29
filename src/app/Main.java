@@ -1,9 +1,7 @@
 package app;
 
-import model.Appointment;
-import model.Doctor;
-import model.Patient;
-import model.Person;
+import model.*;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Scanner;
@@ -15,7 +13,7 @@ class Main {
         HashSet<String> personsIDs = new HashSet<>();
         ArrayList<Patient> patients = new ArrayList<>();
         ArrayList<Doctor> doctors = new ArrayList<>();
-
+        ArrayList<Appointment> appointments = new ArrayList<>();
 
         printMenu();
         int choice = scanner.nextInt();
@@ -47,19 +45,37 @@ class Main {
                         patients.add(p);
                         personsIDs.add(p.getId());
                     }
-                    Appointment a = new Appointment();
-                    a.setP(p);
+
 
                     //2. Find the doctor:
-                    System.out.println("What's the speciality of the doctor.");
-                    System.out.println("1. Generalist.");
-                    System.out.println("2. Generalist.");
-                    System.out.println("3. Generalist.");
-                    System.out.println("4. Generalist.");
-                    System.out.println("5. Generalist.");
-                    int specialityChoice = scanner.nextInt();
-                    switch(specialityChoice){
-                        case 1:
+                    //FIX: make them enums later.
+//                    System.out.println("What's the speciality of the doctor.");
+//                    System.out.println("1. Generalist.");
+//                    System.out.println("2. Pediatrician.");
+//                    System.out.println("3. Dermatologist.");
+//                    System.out.println("4. Ophthalmologist.");
+//                    System.out.println("5. Gynecologist.");
+//                    System.out.println("6. Cardiologist.");
+//                    int specialityChoice = scanner.nextInt();
+                    //Handles the speciality and assign it to the doctors
+                    String specialityChoice = scanner.nextLine();
+                    //3. Find available doctor based on speciality.
+                    boolean full=true;
+                    for(Doctor d: doctors){
+                        if(d.getSpeciality().equalsIgnoreCase(specialityChoice)){
+                            if(d.isAvailable()){
+                                Appointment a = new Appointment();
+                                a.setP(p);
+                                a.setD(d);
+                                //appointmentID
+                                appointments.add(a);
+                                full=false;
+                            }
+                        }
+                    }
+                    //Try to add more details later.
+                    if(full){
+                        System.out.println("Sorry all doctors are full for this week.");
                     }
 
 
@@ -96,7 +112,22 @@ class Main {
 
                     break;
                 case 4:
-                    //Adding a medical record of a patient through a method that takes patient and a doctor and saves the medical record of that patient.
+                    //Adding a medical record of a patient through a method that
+                    // takes patient and a doctor and saves the medical record of that patient.
+                    System.out.println("- Appointment ID?");
+                    String appointmentID = scanner.nextLine();
+                    MedicalRecord medicalRecord = new MedicalRecord();
+
+
+                    //FIX: Make this a method later to Look for appointment ID
+                    //I Can make it a HashMap<appointmentID, appointment>
+                    for(Appointment apt: appointments){
+                        if(appointmentID.equalsIgnoreCase(apt.getAppointmentID())){
+                            apt.setMedicalRecord(medicalRecord);
+                        }
+                    }
+
+
                     break;
                 case 5:
                     //Proceeding payement based on speciality of doctors, if patient did radio, if took a room (based on days of stay in the room).

@@ -5,7 +5,7 @@ import java.util.HashSet;
 public class Doctor extends Person{
     private HashSet<String> availability = new HashSet<>();
     private String speciality;
-    private boolean isAvailable;;
+    private boolean isAvailable;
 
     public Doctor(String firstName, String lastName, String id, String phoneNumber, String speciality) {
         super(firstName, lastName, id, phoneNumber);
