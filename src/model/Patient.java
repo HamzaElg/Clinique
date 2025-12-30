@@ -23,4 +23,10 @@ public class Patient extends Person {
     public String getRole() {
         return "Patient";
     }
+    @Override
+    public void showInfos(){
+        System.out.println("- Patient name:" + name);
+        System.out.println("- Patient ID" + id);
+    }
+
 }

@@ -52,4 +52,11 @@ public class Doctor extends Person {
     public String getRole() {
         return "Doctor";
     }
+
+    @Override
+    public void showInfos(){
+        System.out.println("- Doctor name:" + name);
+        System.out.println("- Doctor ID" + id);
+        System.out.println("- Doctor speciality" + specialty);
+    }
 }

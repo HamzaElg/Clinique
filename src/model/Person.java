@@ -13,4 +13,6 @@ public abstract class Person {
     public String getName() { return name; }
 
     public abstract String getRole();
+    public abstract void showInfos();
+
 }
