@@ -1,165 +1,127 @@
 package app;
 
-import model.Appointment;
-import model.Doctor;
-import model.Patient;
-import model.Person;
-import java.util.ArrayList;
-import java.util.HashSet;
+import model.*;
+import system.ClinicSystem;
+
+import java.time.DayOfWeek;
 import java.util.Scanner;
 
-class Main {
+public class Main {
+
     public static void main(String[] args) {
+
+        ClinicSystem system = new ClinicSystem();
         Scanner scanner = new Scanner(System.in);
 
-        HashSet<String> personsIDs = new HashSet<>();
-        ArrayList<Patient> patients = new ArrayList<>();
-        ArrayList<Doctor> doctors = new ArrayList<>();
+        boolean running = true;
 
-
-        printMenu();
-        int choice = scanner.nextInt();
-
-        do {
-            Patient p = new Patient();
-            String patientID;
-            switch (choice){
-                case 1:
-                    //Logic of creating an appointment between a doctor and a patient.
-                    //1. Create patient infos if don't exists in a hashmap that stores ID's.
-                    //2. Check availablity of doctors, until we find a doctor that have a date. Then assign it.
-
-                    //1. Check if patient infos exists If not create a new one and add it to the queue:
-                    System.out.println("Add the patient ID to check if it exists.");
-                    patientID = scanner.nextLine().toUpperCase();
-
-                    if(personsIDs.contains(patientID)){
-                        System.out.println("This patient already exists.");
-                        //Find which patient to assign it to the appointment
-                        for(Patient patient: patients){
-                            if(patient.getId().equalsIgnoreCase(patientID)){
-                                p = patient;
-                                break;
-                            }
-                        }
-                    }else{
-                        p = addPatient(patientID);
-                        patients.add(p);
-                        personsIDs.add(p.getId());
-                    }
-                    Appointment a = new Appointment();
-                    a.setP(p);
-
-                    //2. Find the doctor:
-                    System.out.println("What's the speciality of the doctor.");
-                    System.out.println("1. Generalist.");
-                    System.out.println("2. Generalist.");
-                    System.out.println("3. Generalist.");
-                    System.out.println("4. Generalist.");
-                    System.out.println("5. Generalist.");
-                    int specialityChoice = scanner.nextInt();
-                    switch(specialityChoice){
-                        case 1:
-                    }
-
-
-
-                    break;
-                case 2:
-                    //Adding informations of the doctor.
-                    //I'm not sure which one is better to do
-                    //Person p = new Patient(); vs Patient p = new Patient();
-                    System.out.println("Add the doctor ID to check if it exists.");
-                    String doctorID = scanner.nextLine().toUpperCase();
-                    if(personsIDs.contains(doctorID)){
-                        System.out.println("This doctor already exists.");
-
-                    }else{
-                        Doctor d = addDoctor(doctorID);
-                        doctors.add(d);
-                    }
-
-                    break;
-                case 3:
-                    //Adding infos of a patient.
-                    //FIX variables either outside of the scope or remove init.
-                    System.out.println("Add the patient ID to check if it exists.");
-                    patientID = scanner.nextLine().toUpperCase();
-                    if(personsIDs.contains(patientID)){
-                        System.out.println("This patient already exists.");
-                    }else{
-                        p = addPatient(patientID);
-                        patients.add(p);
-                        personsIDs.add(p.getId());
-                    }
-
-
-                    break;
-                case 4:
-                    //Adding a medical record of a patient through a method that takes patient and a doctor and saves the medical record of that patient.
-                    break;
-                case 5:
-                    //Proceeding payement based on speciality of doctors, if patient did radio, if took a room (based on days of stay in the room).
-                    break;
-                case 0:
-                    System.out.println("Goodbye!");
-            }
+        while (running) {
             printMenu();
-            choice = scanner.nextInt();
-        }while(choice != 0);
+            String choice = scanner.nextLine();
 
-
-    }
-    static Patient addPatient(String patientID){
-        Scanner scanner = new Scanner(System.in);
-        //I'm not sure which one is better to do
-        //Person p = new Patient(); vs Patient p = new Patient();
-        System.out.println("----Adding a new patient----");
-        System.out.println("-Add patient first name:");
-        String firstName = scanner.nextLine();
-        System.out.println("-Add patient last name:");
-        String lastName = scanner.nextLine();
-        System.out.println("-Add patient phone number:");
-        String phoneNumber = scanner.nextLine();
-        System.out.println("-Patient has insurance?(true/fasle)");
-        boolean hasInsurance = scanner.nextBoolean();
-        String insurance;
-        if(hasInsurance){
-            System.out.println("-Add patient name:");
-            insurance = scanner.nextLine();
-        }else{
-            insurance="";
+            try {
+                switch (choice) {
+                    case "1" -> registerDoctor(system, scanner);
+                    case "2" -> registerPatient(system, scanner);
+                    case "3" -> requestAppointment(system, scanner);
+                    case "4" -> showAppointmentsByDay(system, scanner);
+                    case "5" -> {
+                        system.resetWeek();
+                        System.out.println("✅ New week started ✅");
+                    }
+                    case "0" -> {
+                        running = false;
+                        System.out.println("Goodbye👋👋");
+                    }
+                    default -> System.out.println("❌ Invalid option ❌");
+                }
+            } catch (Exception e) {
+                System.out.println("❌ Error: " + e.getMessage());
+            }
         }
-        Patient p = new Patient(firstName,lastName,patientID,phoneNumber,hasInsurance,insurance);
-        return p;
     }
-    static Doctor addDoctor(String doctorID){
-        Scanner scanner = new Scanner(System.in);
 
-        //I'm not sure which one is better to do
-        //Person p = new Patient(); vs Patient p = new Patient();
-        System.out.println("----Adding a new doctor----");
-        System.out.println("-Add doctor first name:");
-        String firstName = scanner.nextLine();
-        System.out.println("-Add doctor last name:");
-        String lastName = scanner.nextLine();
-        System.out.println("-Add doctor phone number:");
-        String phoneNumber = scanner.nextLine();
-        System.out.println("-Add doctor speciality:");
-        String speciality = scanner.nextLine();
-
-        Doctor d = new Doctor(firstName,lastName,doctorID,phoneNumber,speciality);
-        return d;
+    // ---------------- MENU ----------------
+    private static void printMenu() {
+        System.out.println("""
+                
+                ========= Clinic System =========
+                1. Register Doctor              |
+                2. Register Patient             |
+                3. Request Appointment          |
+                4. Show Appointments By Day     |
+                5. Reset Week                   |
+                0. Exit                         |
+                ================================
+                Choose an option:
+                """);
     }
-    static void printMenu(){
 
-        System.out.println("----------------Menu Clinique----------------");
-        System.out.println("1. New appointment.");
-        System.out.println("2. Add a new doctor.");
-        System.out.println("3. Add a patient.");
-        System.out.println("4. Medical record.");
-        System.out.println("5. Proceed a payment.");
-        System.out.println("0. Quit.");
-        System.out.println("Choose an option:");
+    // ---------------- ACTIONS ----------------
+    private static void registerDoctor(ClinicSystem system, Scanner scanner) {
+        System.out.print("- Enter Doctor ID: ");
+        String id = scanner.nextLine();
+
+        System.out.print("- Enter Doctor Full Name: ");
+        String name = scanner.nextLine();
+
+        System.out.print("- Enter Doctor specialty: ");
+        String specialty = scanner.nextLine();
+
+        //FIX: Check if it keeps adding that doctor to the list
+        system.registerDoctor(new Doctor(id, name, specialty));
+        System.out.println("✅ Doctor registered.");
+    }
+
+    private static void registerPatient(ClinicSystem system, Scanner scanner) {
+        System.out.print("- Enter Patient ID: ");
+        String id = scanner.nextLine();
+
+        System.out.print("- Enter Patient Full Name: ");
+        String name = scanner.nextLine();
+
+        system.registerPatient(new Patient(id, name));
+        System.out.println("✅ Patient registered.");
+    }
+
+    private static void requestAppointment(ClinicSystem system, Scanner scanner) {
+
+        System.out.print("- Enter Patient ID: ");
+        String patientId = scanner.nextLine();
+
+        System.out.print("- Enter Doctor's Specialty: ");
+        String specialty = scanner.nextLine();
+
+        try {
+            Patient patient = system.getPatientById(patientId);
+
+            Appointment appointment =
+                    system.requestAppointment(patient, specialty);
+
+            if (appointment == null) {
+                System.out.println("❌ No available doctor this week.");
+            } else {
+                System.out.println("✅ Appointment scheduled on " +
+                        appointment.getDay() +
+                        " with " +
+                        appointment.getDoctor().getName());
+            }
+
+        } catch (IllegalArgumentException e) {
+            System.out.println("❌ " + e.getMessage());
+        }
+    }
+
+    private static void showAppointmentsByDay(ClinicSystem system, Scanner scanner) {
+        System.out.print("- Enter day (MONDAY..SATURDAY): ");
+        DayOfWeek day = DayOfWeek.valueOf(scanner.nextLine().toUpperCase());
+
+        System.out.println("Appointments on " + day + ":");
+        for (Appointment a : system.getAppointmentsForDay(day)) {
+            System.out.println(
+                    "- " + a.getPatient().getName()
+                    + " with " + a.getDoctor().getName()
+            );
+        }
     }
 }

@@ -1,52 +1,25 @@
 package model;
 
-import java.time.LocalDateTime;
+import java.time.DayOfWeek;
 
 public class Appointment {
-    private Patient p;
-    private Doctor d;
-    private String appointementDate;
-    private LocalDateTime dateTime;
 
-    public Appointment(Patient p, Doctor d, String appointementDate, LocalDateTime dateTime) {
-        this.p = p;
-        this.d = d;
-        this.appointementDate = appointementDate;
-        this.dateTime = dateTime;
+    private Patient patient;
+    private Doctor doctor;
+    private DayOfWeek day;
+    private MedicalRecord medicalRecord;
+
+    public Appointment(Patient patient, Doctor doctor, DayOfWeek day) {
+        this.patient = patient;
+        this.doctor = doctor;
+        this.day = day;
     }
 
-    public Appointment() {
+    public void addMedicalRecord(MedicalRecord record) {
+        this.medicalRecord = record;
     }
 
-    public Patient getP() {
-        return p;
-    }
-
-    public void setP(Patient p) {
-        this.p = p;
-    }
-
-    public Doctor getD() {
-        return d;
-    }
-
-    public void setD(Doctor d) {
-        this.d = d;
-    }
-
-    public String getAppointementDate() {
-        return appointementDate;
-    }
-
-    public void setAppointementDate(String appointementDate) {
-        this.appointementDate = appointementDate;
-    }
-
-    public LocalDateTime getDateTime() {
-        return dateTime;
-    }
-
-    public void setDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
-    }
+    public Patient getPatient() { return patient; }
+    public Doctor getDoctor() { return doctor; }
+    public DayOfWeek getDay() { return day; }
 }

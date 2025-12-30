@@ -1,58 +1,62 @@
 package model;
 
-import java.util.HashSet;
+import java.time.DayOfWeek;
+import java.util.*;
 
-public class Doctor extends Person{
-    private HashSet<String> availability = new HashSet<>();
-    private String speciality;
-    private boolean isAvailable;;
+public class Doctor extends Person {
 
-    public Doctor(String firstName, String lastName, String id, String phoneNumber, String speciality) {
-        super(firstName, lastName, id, phoneNumber);
-        this.speciality = speciality;
-        this.availability.add("MONDAY");
-        this.availability.add("TUESDAY");
-        this.availability.add("WEDNESDAY");
-        this.availability.add("THURSDAY");
-        this.availability.add("FRIDAY");
-        this.availability.add("SATURDAY");
-        this.isAvailable = true;
-    }
-    public Doctor(){}
+    private String specialty;
+    private Map<DayOfWeek, Integer> capacityPerDay;
+    private List<Appointment> appointments = new ArrayList<>();
 
-    public HashSet<String> getAvailability() {
-        return availability;
+    public Doctor(String id, String name, String specialty) {
+        super(id, name);
+        this.specialty = specialty;
+        initWeeklyCapacity();
     }
 
-    public void setAvailability(HashSet<String> availability) {
-        this.availability = availability;
+    private void initWeeklyCapacity() {
+        capacityPerDay = new EnumMap<>(DayOfWeek.class);
+        capacityPerDay.put(DayOfWeek.MONDAY, 30);
+        capacityPerDay.put(DayOfWeek.TUESDAY, 30);
+        capacityPerDay.put(DayOfWeek.WEDNESDAY, 30);
+        capacityPerDay.put(DayOfWeek.THURSDAY, 30);
+        capacityPerDay.put(DayOfWeek.FRIDAY, 30);
+        capacityPerDay.put(DayOfWeek.SATURDAY, 20);
     }
 
-    public String getSpeciality() {
-        return speciality;
+    public boolean canTakePatient(DayOfWeek day) {
+        return capacityPerDay.getOrDefault(day, 0) > 0;
     }
 
-    public void setSpeciality(String speciality) {
-        this.speciality = speciality;
+    public void assignAppointment(Appointment appointment) {
+        DayOfWeek day = appointment.getDay();
+        capacityPerDay.put(day, capacityPerDay.get(day) - 1);
+        appointments.add(appointment);
     }
 
-    public boolean isAvailable() {
-        return isAvailable;
+    public void resetWeek() {
+        initWeeklyCapacity();
+        appointments.clear();
     }
 
-    public void makeDocAvailable() {
-        isAvailable = true;
+    public String getSpecialty() {
+        return specialty;
     }
 
-    public void makeDocUnavailable() {
-        isAvailable = false;
+    public List<Appointment> getAppointments() {
+        return appointments;
+    }
+
+    @Override
+    public String getRole() {
+        return "Doctor";
     }
 
     @Override
     public void showInfos(){
-        System.out.println("-First name: " + firstName);
-        System.out.println("-Last name: " + lastName);
-        System.out.println("-ID: " + id);
-        System.out.println("-Phone number: " + phoneNumber);
+        System.out.println("- Doctor name:" + name);
+        System.out.println("- Doctor ID" + id);
+        System.out.println("- Doctor speciality" + specialty);
     }
 }
