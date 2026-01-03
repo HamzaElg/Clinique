@@ -19,6 +19,7 @@ The system simulates how a clinic manages **patients**, **doctors**, **appointme
 
 ## Project Architecture :
 src/
+
  ├── app/
  │    └── Main.java                 _→ Application entry point (CLI)_
  │
@@ -48,3 +49,4 @@ All rules are enforced inside ClinicSystem:
 - Data consistency.
 The UI **never manipulates data directly**.
 undation-ready system.
+
